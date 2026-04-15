@@ -267,6 +267,8 @@ var calcVol = function calcVol(){
   $formData = $('#plateform').serialize()+'&'+$('#movementform').serialize()+'&table='+JSON.stringify(table.getTableValues())
   $endpoint = window.location.origin+'/samplecalc/'
   
+  // console.log($formData)
+  
   $.ajax({
   method: 'POST',
   url:    $endpoint,

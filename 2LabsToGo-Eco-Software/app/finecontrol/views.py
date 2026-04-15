@@ -258,7 +258,7 @@ class Clean(View):
                                 'steps': 50, 'warmup_pressure': 1, 'times': 1}
 
     def get(self, request):
-        OC_LAB.send('G0X1')
+        OC_LAB.send('G0X129')
         form['CleaningProcessForm'] = CleaningProcessForm(
             initial=CLEANINGPROCESS_INITIALS)
         return render(request, "./cleanprocess.html", form)
@@ -274,7 +274,7 @@ class CleanAS(View):
                                 'steps': 50, 'warmup_pressure': 1, 'times': 1}
 
     def get(self, request):
-        OC_LAB.send('G0X1')
+        OC_LAB.send('G0X129')
         form['CleaningProcessForm'] = CleaningProcessForm(
             initial=CLEANINGPROCESS_INITIALS)
         return render(request, "./cleanprocessas.html", form)
