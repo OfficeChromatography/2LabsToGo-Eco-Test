@@ -14,10 +14,10 @@ cursor = connection.cursor()
 
 # Add columns
 addColumn1 = "ALTER TABLE sampleapp_pressuresettings_db ADD COLUMN rinsingFactor"
-addColumn2 = "ALTER TABLE sampleapp_bandscomponents_db ADD COLUMN sampleFactor"
+addColumn2 = "ALTER TABLE sampleapp_bandscomponents_db ADD COLUMN sample_factor"
 
-#cursor.execute(addColumn1)
-#cursor.execute(addColumn2)
+cursor.execute(addColumn1)
+cursor.execute(addColumn2)
 
 # close the database connection
 connection.close()
