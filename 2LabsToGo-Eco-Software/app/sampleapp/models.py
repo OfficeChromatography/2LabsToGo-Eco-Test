@@ -36,7 +36,6 @@ class BandsComponents_Db(models.Model):
     sample = models.DecimalField(decimal_places=0, max_digits=1, null=True, blank=True)
     density = models.DecimalField(decimal_places=2, max_digits=6, null=True, blank=True)
     viscosity = models.DecimalField(decimal_places=2, max_digits=6, null=True, blank=True)
-    sample_factor = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
     
 
 class BandSettings_Db(models.Model):
@@ -73,4 +72,4 @@ class PressureSettings_Db(models.Model):
     nozzlediameter = models.CharField(max_length=120, default='0.05')
     rinsingPeriod = models.DecimalField(null=True, decimal_places=0, max_digits=6)
     rinsingSolvent = models.CharField(null=True, max_length=120, blank=True)
-    rinsingFactor = models.DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
+
