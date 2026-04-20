@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-from finecontrol.gcode.position import *
 
 INIT_POINT_X = 20
 INIT_POINT_Y = 3.5
@@ -206,7 +205,7 @@ class GcodeGenerator:
         self.check_return("M203Z40")
         self.check_return("M42P49S0")
         self.check_return("M42P36S0")
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.check_return("G28Z")
         self.check_return(self.pos_rinbot)
         self.down_rinsing()
@@ -229,7 +228,7 @@ class GcodeGenerator:
         self.check_return("M42P49S0")
         self.check_return("M42P36S0")
         self.check_return("G28Z")
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.check_return(self.pos_rinbot)
         self.finish_moves() 
         self.down_rinsing()
@@ -261,17 +260,17 @@ class GcodeGenerator:
         self.set_position_xy(0, 0)
         self.finish_moves()    
 
-    def rinsing(self, nozzlediameter, rinsingSolvent,rinsingFactor):
+    def rinsing(self, nozzlediameter, rinsingSolvent):
         '''Rinse X times with the rinsing solution'''
         self.check_return("M92Z400")
         self.check_return("M203Z40")
         self.check_return("M42P49S0")
         self.check_return("M42P36S0")
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.check_return(self.pos_rinbot)
         print("======================")
         print("Rinsing Solvent:",rinsingSolvent)
-        #print("======================")
+        print("======================")
         self.down_rinsing()
         self.finish_moves()
         
@@ -347,7 +346,7 @@ class GcodeGenerator:
             elif rinsingSolvent == 'Ethyl acetate':
                 sol = 85
             elif rinsingSolvent == 'Methanol':
-                sol = 15  #war 81
+                sol = 81
             elif rinsingSolvent == 'Ethanol':
                 sol = 104
             elif rinsingSolvent == '2-Propanol':
@@ -364,12 +363,6 @@ class GcodeGenerator:
                 sol = 104
 
         j = 0
-        sol1 = float(rinsingFactor)/1.5
-        sol = int(sol*sol1)
-        #sol1 = round(sol*rinsingFactor/100, 0)
-        #sol = int(sol1)
-        print("Solvent Rinsing:", sol, "times")
-        print("Solvent Rinsing:",rinsingFactor, "mL")
         for j in range(sol):
             self.start_pump()
             self.stop_pump()
@@ -417,14 +410,14 @@ class GcodeGenerator:
         '''Inject the needle on the vial'''
         return self.check_return(f"G0E46")
 
-    def sample_rinsing(self,frequency, nozzlediameter, fluid, sample_factor): 
+    def sample_rinsing(self,frequency, nozzlediameter, fluid): 
         '''Rinse X times with the sample and then warm up the nozzle with 200 sample drops '''
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.finish_moves()
         print("======================")
-        print("Sample Solvent:",fluid)
-        print("Nozzle Diameter:",nozzlediameter, "mm")
-        #print("======================")
+        print("fluid",fluid)
+        print("nozzlediameter",nozzlediameter)
+        print("======================")
         
         i = 0
         sam = 0
@@ -498,7 +491,7 @@ class GcodeGenerator:
             elif fluid == 'Ethyl acetate':
                 sam = 48
             elif fluid == 'Methanol':
-                sam = 11    #war 46
+                sam = 46
             elif fluid == 'Ethanol':
                 sam = 62
             elif fluid == '2-Propanol':
@@ -514,10 +507,6 @@ class GcodeGenerator:
             elif fluid == 'Toluene':
                 sam = 61
         i = 0
-        sam1 = float(sample_factor)/1.0
-        sam = int(sam*sam1)
-        print("Sample Rinsing:", sam, "times")
-        print("Sample Rinsing:", sample_factor, "mL")
         for i in range(sam):
             self.start_pump()
             self.stop_pump()
@@ -553,30 +542,21 @@ class GcodeGenerator:
             self.stop_pump()
             i += 1
         
-    # def application(self,frequency,list_of_bands,waitTime,speed,list_sample,rinsingPeriod, nozzlediameter, rinsingSolvent, rinsingFactor, sampleFactor, list_fluid): 
-    def application(self,frequency,list_of_bands,waitTime,speed,list_sample,rinsingPeriod, nozzlediameter, rinsingSolvent, list_fluid,table,rinsingFactor): 
-        
-        #print("application")
-        #print(table)
+    def application(self,frequency,list_of_bands,waitTime,speed,list_sample,rinsingPeriod, nozzlediameter, rinsingSolvent, list_fluid): 
         self.check_return("M92Z400")    #Set Axis Steps-per-unit
         self.check_return("M203Z40")    #max feedrate
         self.check_return("M42P49S0")   #z-switch
         self.check_return("M42P36S0")   #3-way valve switch
-        self.rinsingFactor = rinsingFactor
-        #print("Solvent Rinsing:",rinsingFactor, "mL")
+        
         i = 0
         temp = 0
         mod = 0
         step = 0
         decrement = rinsingPeriod
-        sample_factors = []
-        for _ in table:
-            sample_factors.append(_['sample_factor'])
-        
-        #print("sample_factors",sample_factors)
+
         for band in list_of_bands:
             if i == 0 or list_sample[i] != list_sample[i-1]:  
-                self.check_return("G0X129F5000")
+                self.check_return("G0X1F5000")
                 self.check_return(self.hole_positions[list_sample[i] - 1])
                 self.check_return("G0E20")
                 self.finish_moves()
@@ -599,22 +579,18 @@ class GcodeGenerator:
                     mod = 0
             elif (len(list_sample) == 1):
                 flag = 4
-                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i],sample_factors[i])
-                
-                # self.sample_rinsing(frequency, nozzlediameter, sampleFactor, list_fluid[i])
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
                 
             else:
                 if (aux == list_sample[i-1]):
                     flag = 3
-               
+                
             if (temp == 1):
-                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i],sample_factors[i])
-                # self.sample_rinsing(frequency, nozzlediameter, sampleFactor, list_fluid[i])
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
                 temp = 0
                 mod = 1 
             if (flag == 0 and step != 1):
-                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i],sample_factors[i])
-                # self.sample_rinsing(frequency, nozzlediameter, sampleFactor, list_fluid[i])
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
             elif(step == 1 and flag == 0):
                 step = 0
             direction_y = 0
@@ -631,7 +607,7 @@ class GcodeGenerator:
                     self.finish_moves()
                     direction_y = point[0]
                 if decrement == 0:
-                    self.check_return("G0X129F5000")
+                    self.check_return("G0X1F5000")
                     self.finish_moves()
                     self.start_pump()
                     self.stop_pump()
@@ -640,13 +616,13 @@ class GcodeGenerator:
             if (flag == 0 or flag == 3 or flag == 4):
                 self.up()
                 self.finish_moves()         
-                self.rinsing(nozzlediameter, rinsingSolvent, rinsingFactor) 
+                self.rinsing(nozzlediameter, rinsingSolvent) 
             i += 1
         self.check_return("M42P37S0")  #dispensing valve
 
     def load_vials(self):
         '''Load/Unload the vials'''
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.check_return("G0E0")
         self.check_return("G28Z")
         self.finish_moves()
@@ -794,7 +770,7 @@ class GcodeGeneratorSP:   #syringe pump
         self.check_return("M203Z5")       #max feedrate
         self.check_return("M42P49S255")   #z-switch
         self.check_return("M42P36S255")   #3-way valve switch
-        self.check_return("G0X129F5000")
+        self.check_return("G0X1F5000")
         self.pressurize("10")
         self.open_valve_frequency("2")
         self.check_return("G28X")

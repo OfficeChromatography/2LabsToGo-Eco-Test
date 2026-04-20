@@ -23,10 +23,7 @@ class SampleView(FormView):
         OC_LAB.send(f'M203Z40')   
         OC_LAB.send(f'M42P49S0')
         OC_LAB.send(f'M42P36S0')
-        OC_LAB.send(f'G28E') 
-        OC_LAB.send(f'G92E')
-        OC_LAB.send(f'G28ZYX')   
-            
+        OC_LAB.send(f'G28ZYX')        
         return render(request,'sample.html',{})
 
 class SyringeView(FormView):
@@ -68,8 +65,7 @@ class SampleDetails(View):
 
                 bands_components = BandsComponents_Db.objects.filter(sample_application=sample_config.id).values()
                 response.update({'bands_components': [entry for entry in bands_components]})
-            
-            # print(response)
+
             return JsonResponse(response)
 
  
@@ -77,7 +73,7 @@ class SampleDetails(View):
         """Save and Update Data"""
         id = request.POST.get("selected-element-id")
         bands_components = json.loads(request.POST.get('table'))
-        print("bands_components",bands_components)
+        
         if not id or not SampleApplication_Db.objects.filter(method=Method_Db.objects.get(pk=id)):
             sample_form = SampleApplication_Form(request.POST)
             if sample_form.is_valid():

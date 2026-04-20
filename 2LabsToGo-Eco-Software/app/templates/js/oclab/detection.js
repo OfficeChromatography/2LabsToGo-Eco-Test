@@ -118,7 +118,7 @@ $('#whitetext').on('change',function(){
 })
 
 var methodSelected = [{name: "id", value: "id"},{name: "filename", value: "filename"}]
-function loadMethodSelected(){c
+function loadMethodSelected(){
     methodSelected[0].value = $('[aria-selected="true"]').find("a").attr("value_saved"),
     methodSelected[1].value = $('[aria-selected="true"]').text()
 }
@@ -191,7 +191,6 @@ $('#cameraposbttn').on('click', function (e) {
     sendToMachine('M355 S0 P255')
     gcode = 'G1X90\nG28YZ\nG1Y158Z270F3000' //Y value depends on each system
     sendToMachine(gcode)
-    //sendToMachine("data.camera_position")
     gcode = 'M355S1P50';  //case light on
     sendToMachine(gcode);
     gcode = 'M355S0P50';  //case light off

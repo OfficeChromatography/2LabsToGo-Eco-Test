@@ -20,7 +20,7 @@ async function sendToMachine(value) {
 
 async function openValve() {
     try {
-        await sendToMachine('G0X129');                  // Waste bottle
+        await sendToMachine('G0X1');                  // Waste bottle
         await sendToMachine('M400');
         await sendToMachine('M42P36S255');            // Activate 3-way valve
         await sendToMachine('G41');                   // Open dispensing valve
