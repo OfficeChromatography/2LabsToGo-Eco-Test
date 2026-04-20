@@ -251,7 +251,17 @@ def calculate(data):
             map(minusOneUntilZero, band_application_times))
 
     list_of_bands = bands_aux
-
+    #print("list_of_bands",list_of_bands)
+    #print("data",data)
+    # print("sampleFactor",data.table.sample_factor)
+    #print(type(data.table))
+    #for table in data.table:
+        #print(table['sample_factor'])
+        # drop_volume = FlowAS(pressure=float(data.pressure), nozzle_diameter=data.nozzlediameter,
+        #                    time_or_frequency=float(data.frequency), fluid=table['type'], density=table['density'],
+        #                    viscosity=table['viscosity']).calcVolumeFrequency()
+    # print("rinsingFactor",data.rinsingFactor)
+    
     print_process = PrintingProcess(list_of_bands,
                                     data.motor_speed,
                                     data.frequency,
@@ -263,7 +273,11 @@ def calculate(data):
                                     list_sample,
                                     data.nozzlediameter,
                                     data.rinsingSolvent,
-                                    list_fluid)
+                                    # data.sampleFactor
+                                    # data.rinsingFactor,
+                                    list_fluid,
+                                    data.table,
+                                    data.rinsingFactor)
 
     return print_process.printing_process()
 
@@ -404,7 +418,9 @@ class PrintingProcessSP:
 class PrintingProcess:
 
     def __init__(self, list_of_bands, speed, frequency, temperature, pressure, zero_position, wait_time,
-                 rinsing_period, list_sample, nozzlediameter, rinsingSolvent, list_fluid) -> object:
+                #  rinsing_period, list_sample, nozzlediameter, rinsingSolvent, rinsingFactor, sampleFactor, list_fluid) -> object:
+                 rinsing_period, list_sample, nozzlediameter, rinsingSolvent, list_fluid,table,rinsingFactor) -> object:
+        
         self.list_of_bands = list_of_bands
         self.rinsingPeriod = rinsing_period
         self.speed = speed
@@ -417,6 +433,9 @@ class PrintingProcess:
         self.nozzlediameter = nozzlediameter
         self.list_fluid = list_fluid
         self.rinsingSolvent = rinsingSolvent
+        self.table = table
+        #self.sampleFactor = sampleFactor
+        self.rinsingFactor = rinsingFactor
 
     def printing_process(self):
 
@@ -468,7 +487,7 @@ class PrintingProcess:
         self._gcode_generator.homming("YX")
 
     def _rinsing(self):
-        self._gcode_generator.rinsing(self.nozzlediameter, self.rinsingSolvent)
+        self._gcode_generator.rinsing(self.nozzlediameter, self.rinsingSolvent,self.rinsingFactor)
 
     def _start_pump(self):
         self._gcode_generator.start_pump()
@@ -481,4 +500,4 @@ class PrintingProcess:
 
     def _application(self):
         self._gcode_generator.application(
-            self.frequency, self.list_of_bands, self.waitTime, self.speed, self.list_sample, self.rinsingPeriod, self.nozzlediameter, self.rinsingSolvent, self.list_fluid)
+            self.frequency, self.list_of_bands, self.waitTime, self.speed, self.list_sample, self.rinsingPeriod, self.nozzlediameter, self.rinsingSolvent, self.list_fluid,self.table,self.rinsingFactor)

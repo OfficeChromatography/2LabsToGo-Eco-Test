@@ -37,5 +37,5 @@ $("#valveToggle").on('click',function(e){
 })
 
 $('#rinseVolModal').on('shown.bs.modal', function (e) {
-    sendToMachine('G0X1');
+    sendToMachine('G0X129');
 })
