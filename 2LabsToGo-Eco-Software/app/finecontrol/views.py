@@ -19,7 +19,6 @@ from django.forms.models import model_to_dict
 
 from sampleapp.models import *
 from development.models import *
-from django.apps import apps
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -38,33 +37,27 @@ form = {}
 
 
 class MethodList(FormView):
+
     def get(self, request):
         """Returns a list with all the Methods saved in DB"""
-        Method_Db = apps.get_model("finecontrol", "Method_Db")
-        SampleApplication_Db = apps.get_model("sampleapp", "SampleApplication_Db")
-        Development_Db = apps.get_model("development", "Development_Db")
-        BandsComponents_Db = apps.get_model("sampleapp", "BandsComponents_Db")
-
-        
-        methods = Method_Db.objects.filter(auth=request.user).order_by('-updated_at')
-
+        method = Method_Db.objects.filter(auth_id=request.user).order_by('-id')
         data_saved = []
-
-        for m in methods:
+        for i in method:
             icons = [1, 1, 1, 1]
-
-            if not SampleApplication_Db.objects.filter(method=m).exists():
+            if not SampleApplication_Db.objects.filter(method=i):
                 icons[0] = 0.3
-            if not Development_Db.objects.filter(method=m).exists():
+                
+            if not Development_Db.objects.filter(method=i):
                 icons[1] = 0.3
-
-            band_c = BandsComponents_Db.objects.filter(sample_application__method=m)
+                
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
+            
             if band_c.exists():
                 for obj in band_c:
                     if obj.sample is None:
-                        icons[3] = 0  # [1, 0.3, 1, 0]
-
-            data_saved.append([m.filename, m.id, icons])
+                        icons[3] = 0 # [1,0.3,1,0]
+               
+            data_saved.append([i.filename, i.id, icons])
 
         return JsonResponse(data_saved, safe=False)
 
@@ -72,30 +65,23 @@ class MethodListSP(FormView):
 
     def get(self, request):
         """Returns a list with all the Methods saved in DB"""
-        Method_Db = apps.get_model("finecontrol", "Method_Db")
-        SampleApplication_Db = apps.get_model("sampleapp", "SampleApplication_Db")
-        Development_Db = apps.get_model("development", "Development_Db")
-        BandsComponents_Db = apps.get_model("sampleapp", "BandsComponents_Db")
-
-        methods = Method_Db.objects.filter(auth=request.user).order_by('-updated_at')
-
+        method = Method_Db.objects.filter(auth_id=request.user).order_by('-id')
         data_saved = []
-        for m in methods:
+        for i in method:
             icons = [1, 1, 1, 1]
-
-            if not SampleApplication_Db.objects.filter(method=m).exists():
+            if not SampleApplication_Db.objects.filter(method=i):
                 icons[0] = 0.3
-            if not Development_Db.objects.filter(method=m).exists():
+                
+            if not Development_Db.objects.filter(method=i):
                 icons[1] = 0.3
-
-            band_c = BandsComponents_Db.objects.filter(sample_application__method=m)
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
+            
             if band_c.exists():
                 for obj in band_c:
                     if obj.sample is None:
-                        icons[3] = 0  # [1, 0.3, 1, 0]
-
-            data_saved.append([m.filename, m.id, icons])
-
+                        icons[3] = 0 # [1,0.3,1,0]
+            
+            data_saved.append([i.filename, i.id, icons])
         return JsonResponse(data_saved, safe=False)
 
 
@@ -138,6 +124,7 @@ class SyringeLoad(View):
             return JsonResponse(volumes, safe=False)
 
     def post(self, request):
+        # Creates a new vol in the database
         if 'SAVEMOVEMOTOR' in request.POST:
             try:
                 SyringeLoad_Db.objects.filter(

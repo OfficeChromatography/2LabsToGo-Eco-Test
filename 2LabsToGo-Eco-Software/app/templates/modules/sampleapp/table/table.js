@@ -253,14 +253,6 @@ class Table {
             return this.#sanityUndefined(value)
         }
 
-        setsampleFactor(value) {
-            // console.log("value",value)
-            this.row.find('.sampleFactor').val(value)
-        }
-        getsampleFactor() {
-            let value = this.row.find('.sampleFactor').val()           
-            return this.#sanityUndefined(value)
-        }
 
 
         #setSolventOptions() {
@@ -310,8 +302,7 @@ class Table {
                 "viscosity": this.getViscosity(),
                 "estimated_volume": this.getEstimatedVolume(),
                 "estimated_drop_volume": this.getEstimatedDropVolume(),
-                "minimum_volume": this.getMinimumVolume(),
-                "sample_factor": this.getsampleFactor()
+                "minimum_volume": this.getMinimumVolume()
 
                 }
             
@@ -355,8 +346,7 @@ class Table {
                     } 
                 }
             }
-            // console.log("data in loadDataInRow",data.sample_factor)
-            this.setsampleFactor(data.sample_factor)
+        
             this.setBandNumber(data.band_number);
             this.setProduct(data.product_name);
             this.setSample(data.sample);

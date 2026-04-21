@@ -7,7 +7,7 @@ $(".development-flowrate-insidence").on("change", function (){
 
 
 $(".change-graph-size-parameter").on("change", function(){
-  changeGraphSize()
+  plotPreview.changeGraphSize()
   mainCalculations()
 })
 
@@ -262,17 +262,6 @@ function getAsText(readFile) {
       
     }
   }
-}
-
-// Change the Graph sizes with the size x and y field values.
-function changeGraphSize(){
-  sizeX = parseFloat($("#id_size_x").val());
-  result = sizeX +5;
-  console.log("Result=" + result);
-  plotPreview.config.options.scales.xAxes[0].ticks.max = result; //parseFloat($("#id_size_x").val());
-  plotPreview.config.options.scales.xAxes[0].ticks.min = -5;
-  plotPreview.config.options.scales.yAxes[0].ticks.max = parseFloat($("#id_size_y").val());
-  plotPreview.update();
 }
 
 function flowrateCalc(){

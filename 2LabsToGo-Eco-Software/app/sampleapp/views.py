@@ -23,8 +23,6 @@ class SampleView(FormView):
         OC_LAB.send(f'M203Z40')   
         OC_LAB.send(f'M42P49S0')
         OC_LAB.send(f'M42P36S0')
-        OC_LAB.send(f'G28E')
-        OC_LAB.send(f'G92E')
         OC_LAB.send(f'G28ZYX')        
         return render(request,'sample.html',{})
 
