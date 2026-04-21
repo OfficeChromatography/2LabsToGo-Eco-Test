@@ -7,12 +7,12 @@ class listOfSaved{
         this.loadEvent = loadEvent;
         this.delete_app_url = delete_app_url;
         this.delete_method_url = 'http://127.0.0.1:8000/method/delete/';
-
+        this.type_list = list_option;
+        this.saveIDs=[];
         this.$click_new_button_handler()
         this.$click_save_button_handler()
         this.$click_export_button_handler()
-        this.type_list = list_option;
-        this.saveIDs=[];
+        
     }
     $renderListInScreen = (elements) => {
         // Render list of saved in screen
@@ -148,7 +148,7 @@ class listOfSaved{
 
     $click_new_button_handler(){
         
-        $("#new_method_bttn").on("click",function(){
+        $("#new_method_bttn").on("click",()=>{
             if ($('#notestextarea').length) {
                 $('#notestextarea').val(''); 
                 $('#image_id').attr('src', $('#image_id').data('default-src'));
@@ -171,6 +171,28 @@ class listOfSaved{
                 const filas = parseInt($("#id_value").val()) || 0;
                 window.newComponentsTable(filas);
              }
+            switch(this.type_list){
+                case "autosampler":
+                    $("#id_main_property").val("1").trigger("change");
+                    $("#id_value").val("2");
+                    $("#id_gap").val("4");
+                    handlePropertyChange();
+                    mainCalculations();
+                    calcVol();
+                    break;
+                case "syringe_pump":
+                    $("#id_main_property").val("1").trigger("change");
+                    $("#id_value").val("2");
+                    $("#id_gap").val("4");
+                    //handlePropertyChange();
+                    //mainCalculations();
+                    //calcVol();
+                    break;
+                default:
+                    break;
+                                 
+
+            }
         }
     )
     }

@@ -21,6 +21,7 @@ var setData = function (data){
   });
   $('.change-graph-size-parameter').trigger('change')
   table.loadTable(data.bands_components)
+  calcVol();
 }
 
 var list_of_saved = new listOfSaved("http://127.0.0.1:8000/sample/save/",
@@ -368,7 +369,7 @@ $(document).ready(function() {
   //createBandsTable()
   const defaultValue = parseFloat($("#id_value").val());
   createBandsTable(defaultValue);
-  calcVol()
+  //calcVol()
   list_of_saved.loadList()
 });
 
